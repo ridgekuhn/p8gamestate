@@ -1,0 +1,62 @@
+# P8
+.p8.png
+dist
+
+# picotool
+!vendor/picotool
+
+# Vim
+*.swp
+
+# Dotenv
+.env
+.env.*
+!.env.example
+
+# Composer
+vendor
+
+# WP-CLI
+wp-cli.local.yml
+
+# NodeJS
+.npmrc
+node_modules
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# Editor files
+*.sublime-project
+*.sublime-workspace
+*.komodoproject
+
+# Compiled source
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Archives and packages
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# OS-generated files
+.fseventsd*
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
