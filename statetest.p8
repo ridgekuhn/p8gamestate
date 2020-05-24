@@ -105,15 +105,7 @@ function game_init()
 end
 
 function game_running_update()
-	if(level.state == 'start') then
-		level_start_update()
-		
-	elseif(level.state == 'running') then
-		level_running_update()
-		
-	elseif(level.state == 'end') then
-		level_end_update()
-	end
+	level_init()
 	
 	level.clock = level.clock + 1
 end
@@ -166,6 +158,18 @@ levels = {
 		difficulty = 9999
 	}
 }
+
+function level_init()
+	if(level.state == 'start') then
+		level_start_update()
+		
+	elseif(level.state == 'running') then
+		level_running_update()
+		
+	elseif(level.state == 'end') then
+		level_end_update()
+	end
+end
 
 function level_start_update()
 	if(level.clock >= 90) then
