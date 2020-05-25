@@ -1,57 +1,63 @@
 -->8
---game state
+--game app state
+--@see /src/app.lua
+--@see /src/levels.lua
 
-game = {}
-game.state = 'init'
+--describe the game fsm
+game = {
+  states = {
+    init = app.states.game.init,
+    running = {},
+    over = {}
+  }
+}
 
-function game_init()
-	if(game.state == 'init') then
-		game.clock = 0
-		level.state = 'start'
-		level.n = cfg.lvl > 1 and cfg.lvl or 1
-		game.state = 'running'
-		_init()
+--set default game properties
+game.clock = 0
 
-	elseif(game.state == 'running') then
-		_update = game_running_update
-		_draw = game_running_draw
+---initialize the game app state
+function app.states.game.init()
+  --run the game fsm
+	set_p8loop(game, 'running')
+  --start the level fsm
+  level.change_state('start', true)
 
-	elseif(game.state == 'over') then
-		_update = game_over_update
-		_draw = game_over_draw
-	end
+  game.clock = 0
 end
 
-function game_running_update()
-	level_init()
+---update game while running
+function game.states.running.update()
+	level.update()
 
-	level.clock = level.clock + 1
+  game.clock = game.clock + 1
 end
 
-function game_running_draw()
+---draw game while running
+function game.states.running.draw()
 	cls()
-	print('level #:'..tostr(level.n))
-	print('lvlstate:'..level.state)
-	print('lvlname:'..levels[level.n].name)
-	print('lvldiff:'..tostr(levels[level.n].difficulty))
+  print('level #:'..tostr(level.n))
+	print('lvlname:'..level[level.n].name)
+	print('lvldiff:'..tostr(level[level.n].difficulty))
 	print('lvlclock:'..tostr(level.clock))
+  print('gameclock:'..tostr(game.clock))
+  level.draw()
 end
 
-function game_over_update()
+---update game when over
+function game.states.over.update()
 	if(btnp(🅾️)) then
-		game.state = 'init'
-		_init()
+		set_p8loop(app, 'game', true)
 
 	elseif(btnp(❎)) then
-		app.state = 'title'
-		_init()
+    set_p8loop(app, 'title')
 	end
 end
 
-function game_over_draw()
+---draw game when over
+function game.states.over.draw()
 	cls()
 	print('game over!')
 	print('🅾️ - restart game')
-	print('❎ - title screen')
+	print('❎ - title menu')
 end
 

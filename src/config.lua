@@ -1,38 +1,38 @@
 -->8
---config state
+--config menu app state
+--@see /src/app.lua
 
-cfg = {}
-cfg.lvl = 1
+--set config vars
+cfg = {
+  level = 1
+}
 
-function config_init()
-	_update = config_update
-	_draw = config_draw
-end
-
-function config_update()
-	if(btnp(⬆️) and cfg.lvl < 3) then
-		cfg.lvl = cfg.lvl + 1
-	elseif(btnp(⬇️) and cfg.lvl > 1) then
-		cfg.lvl = cfg.lvl - 1
+---update config menu
+--allow user to select
+--a starting level
+--and begin the game,
+--or exit to title menu
+function app.states.config.update()
+	if(btnp(⬆️) and cfg.level < 3) then
+		cfg.level = cfg.level + 1
+	elseif(btnp(⬇️) and cfg.level > 1) then
+		cfg.level = cfg.level - 1
 	end
 
 	if(btnp(🅾️)) then
-		app.state = 'game'
-		game.state = 'init'
-		level.n = cfg.lvl
-		_init()
+		set_p8loop(app, 'game', true)
 
 	elseif(btnp(❎)) then
-		app.state = 'title'
-		_init()
+    set_p8loop(app, 'title')
 	end
 end
 
-function config_draw()
+---draw config menu
+function app.states.config.draw()
 	cls()
-	print('level: '..tostr(cfg.lvl))
+	print('level: '..tostr(cfg.level))
 	print('⬆️,⬇️ - change level')
 	print('🅾️ - start game')
-	print('❎ - title screen')
+	print('❎ - title menu')
 end
 

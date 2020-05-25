@@ -1,26 +1,22 @@
 -->8
---title state
+--title menu app state
 
-function title_init()
-	_update = title_update
-	_draw = title_draw
-end
-
-function title_update()
+---update title menu
+--allow user to enter
+--game or config menu
+function app.states.title.update()
 	if(btnp(🅾️)) then
-		app.state = 'game'
-		game.state = 'init'
-		_init()
+    set_p8loop(app, 'game', true)
 	elseif(btnp(❎)) then
-		app.state = 'config'
-		_init()
+    set_p8loop(app, 'config')
 	end
 end
 
-function title_draw()
+---draw title menu
+function app.states.title.draw()
 	cls()
 	print('hello, world!')
 	print('🅾️ - start game')
-	print('❎ - config')
+	print('❎ - config menu')
 end
 

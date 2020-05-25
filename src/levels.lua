@@ -1,66 +1,98 @@
 -->8
---level state
+--level game state
+--@see /src/game.lua
+--@see /src/config.lua
 
-level = {}
-level.n = 1
-level.state = 'start'
-level.clock = 0
-
-levels = {
+--describe the level fsm
+level = {
+  --draw(), @see /src/game.lua and below
+  --update(), @see /src/game.lua and below
+  states = {
+    start = {},
+    running = {},
+    over = {}
+  },
+  --describe level data
 	[1] = {
 		name = 'foo',
-		difficulty = 50
+		difficulty = 50,
+    camera = {0, 0}
 	},
 	[2] = {
 		name = 'bar',
-		difficulty = 100
+		difficulty = 100,
+    camera = {64, 64}
 	},
 	[3] = {
 		name = 'whatever',
-		difficulty = 9999
+		difficulty = 9999,
+    camera = {0, 0}
 	}
 }
 
-function level_init()
-	if(level.state == 'start') then
-		level_start_update()
+--set default level properties
+level.n = 1
+level.clock = 0
 
-	elseif(level.state == 'running') then
-		level_running_update()
-
-	elseif(level.state == 'end') then
-		level_end_update()
-	end
+function level.init()
+  --get config
+  level.n = cfg.level or 1
 end
 
-function level_start_update()
+function level.change_state(state, init)
+  level.update = level.states[state].update
+  level.draw = level.states[state].draw
+
+  if(init) then
+    level.init()
+  end
+
+  level.clock = 0
+end
+
+function level.states.start.update()
 	if(level.clock >= 90) then
-		level.state = 'running'
-		level.clock = 0
-		_init()
+		level.change_state('running')
 	end
+
+	level.clock = level.clock + 1
 end
 
-function level_running_update()
+function level.states.start.draw()
+  print('lvlstate: start')
+  print('ready...')
+end
+
+function level.states.running.update()
 	if(level.clock >= 90) then
-		level.state = 'end'
-		level.clock = 0
-		_init()
+		level.change_state('over')
 	end
+
+	level.clock = level.clock + 1
 end
 
-function level_end_update()
+function level.states.running.draw()
+  print('lvlstate: running')
+  if(level.clock < 30) then
+    print('go!!!')
+  end
+end
+
+function level.states.over.update()
 	if(level.clock >= 90) then
 		level.n = level.n + 1
 
-		if(level.n > #levels) then
-			game.state = 'over'
-			_init()
+		if(level.n > #level) then
+			set_p8loop(game, 'over')
 		end
 
-		level.state = 'start'
-		level.clock = 0
-		_init()
+		level.change_state('start')
 	end
+
+	level.clock = level.clock + 1
 end
 
+function level.states.over.draw()
+  print('lvlstate: over')
+  print('level cleared!')
+end
